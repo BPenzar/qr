@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { nanoid } from "nanoid";
 import { updateForm } from "@/lib/repositories/forms";
+import type { Tables } from "@/lib/database.types";
 import { getServerSupabaseClient } from "@/lib/supabase/server-client";
 import { appUrl } from "@/env/server";
 import { parsePlanLimits, assertQrLimit } from "@/lib/plan-limits";
@@ -68,7 +69,13 @@ export async function generateQrCodeAction(formData: FormData) {
     .select("id", { count: "exact", head: true })
     .eq("form_id", parsed.data.formId);
 
-  const limits = parsePlanLimits({ plan: form.account?.plan });
+  type FormWithAccount = Tables<"forms"> & {
+    account?: (Tables<"accounts"> & { plan?: Tables<"plans"> | null }) | null;
+  };
+
+  const formWithAccount = form as FormWithAccount;
+
+  const limits = parsePlanLimits({ plan: formWithAccount.account?.plan });
   try {
     assertQrLimit(limits, count ?? 0);
   } catch (planError) {

@@ -4,6 +4,7 @@ import { createHash } from "crypto";
 import { getServiceRoleClient } from "@/lib/supabase/admin-client";
 import { parsePlanLimits, assertResponsesLimit } from "@/lib/plan-limits";
 import { endOfMonth, startOfMonth } from "date-fns";
+import type { Tables } from "@/lib/database.types";
 
 const submissionSchema = z.object({
   channel: z.enum(["qr", "widget", "link"]),
@@ -51,7 +52,13 @@ export async function POST(request: Request, { params }: { params: RouteParams }
     return NextResponse.json({ message: "Form not found" }, { status: 404 });
   }
 
-  if (form.status !== "published") {
+  type FormWithAccount = Tables<"forms"> & {
+    account?: (Tables<"accounts"> & { plan?: Tables<"plans"> | null }) | null;
+  };
+
+  const formWithAccount = form as FormWithAccount;
+
+  if (formWithAccount.status !== "published") {
     return NextResponse.json({ message: "Form is not accepting responses" }, { status: 403 });
   }
 
@@ -61,10 +68,10 @@ export async function POST(request: Request, { params }: { params: RouteParams }
   const { count } = await supabase
     .from("responses")
     .select("id", { count: "exact", head: true })
-    .eq("account_id", form.account_id)
+    .eq("account_id", formWithAccount.account_id)
     .gte("submitted_at", periodStart);
 
-  const limits = parsePlanLimits({ plan: form.account?.plan });
+  const limits = parsePlanLimits({ plan: formWithAccount.account?.plan });
   try {
     assertResponsesLimit(limits, count ?? 0);
   } catch (planError) {
@@ -83,8 +90,8 @@ export async function POST(request: Request, { params }: { params: RouteParams }
   const { data: response, error: insertError } = await supabase
     .from("responses")
     .insert({
-      account_id: form.account_id,
-      form_id: form.id,
+      account_id: formWithAccount.account_id,
+      form_id: formWithAccount.id,
       channel: parsed.data.channel,
       location_name: parsed.data.locationName ?? null,
       attributes: parsed.data.attributes ?? {},
@@ -115,7 +122,7 @@ export async function POST(request: Request, { params }: { params: RouteParams }
 
   await supabase.from("usage_counters").upsert(
     {
-      account_id: form.account_id,
+      account_id: formWithAccount.account_id,
       metric: "responses_monthly",
       period_start: periodStart.slice(0, 10),
       period_end: periodEndDate.slice(0, 10),
