@@ -88,16 +88,16 @@ export async function generateQrCodeAction(formData: FormData) {
   const shortCode = nanoid(8).toLowerCase();
   const destinationUrl = `${appUrl}/f/${shortCode}`;
 
-  const { error } = await supabase
-    .from("form_qr_codes")
-    .insert([
-      {
-        form_id: parsed.data.formId,
-        label: parsed.data.label,
-        short_code: shortCode,
-        destination_url: destinationUrl,
-      } satisfies TablesInsert<"form_qr_codes">,
-    ]);
+  const qrInsert: TablesInsert<"form_qr_codes">[] = [
+    {
+      form_id: parsed.data.formId,
+      label: parsed.data.label,
+      short_code: shortCode,
+      destination_url: destinationUrl,
+    },
+  ];
+
+  const { error } = await supabase.from("form_qr_codes").insert(qrInsert);
 
   if (error) {
     console.error("Failed to create QR code", error);

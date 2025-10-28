@@ -124,16 +124,18 @@ export async function POST(request: Request, { params }: { params: RouteParams }
     console.error("Failed to insert response items", itemsError);
   }
 
+  const usageCounterUpsert: TablesInsert<"usage_counters">[] = [
+    {
+      account_id: formWithAccount.account_id,
+      metric: "responses_monthly",
+      period_start: periodStart.slice(0, 10),
+      period_end: periodEndDate.slice(0, 10),
+      value: (count ?? 0) + 1,
+    },
+  ];
+
   await supabase.from("usage_counters").upsert(
-    [
-      {
-        account_id: formWithAccount.account_id,
-        metric: "responses_monthly",
-        period_start: periodStart.slice(0, 10),
-        period_end: periodEndDate.slice(0, 10),
-        value: (count ?? 0) + 1,
-      } satisfies TablesInsert<"usage_counters">,
-    ],
+    usageCounterUpsert,
     {
       onConflict: "account_id,metric,period_start",
     },
