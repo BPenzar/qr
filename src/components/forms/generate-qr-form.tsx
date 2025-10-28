@@ -26,8 +26,22 @@ export const GenerateQrForm = ({ formId }: Props) => {
       if (result.success) {
         setLastCode(result.shortCode ?? null);
         setErrorMessage(null);
-      } else if (result.errors?.limit) {
-        setErrorMessage(result.errors.limit[0]);
+        return;
+      }
+
+      if (result.errors && "limit" in result.errors) {
+        const limitErrors = result.errors.limit;
+        if (Array.isArray(limitErrors) && limitErrors.length > 0) {
+          setErrorMessage(limitErrors[0]);
+        } else {
+          setErrorMessage("Unable to generate QR code");
+        }
+        return;
+      }
+
+      if (result.errors) {
+        const firstError = Object.values(result.errors)[0]?.[0];
+        setErrorMessage(firstError ?? "Unable to generate QR code");
       }
     });
   };

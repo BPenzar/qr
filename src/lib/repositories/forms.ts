@@ -14,7 +14,7 @@ const questionBaseSchema = z.object({
   description: z.string().max(500).optional(),
   placeholder: z.string().max(200).optional(),
   isRequired: z.boolean().default(false),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 
 const questionOptionsSchema = z.object({
@@ -159,7 +159,7 @@ export const createForm = async (input: z.infer<typeof formPayloadSchema>) => {
       options:
         "options" in question ? { options: question.options } : null,
       is_required: question.isRequired,
-      metadata: question.metadata ?? {},
+      metadata: (question.metadata ?? {}) as TablesInsert<"form_questions">["metadata"],
     }),
   );
 
@@ -183,7 +183,7 @@ const updateFormSchema = z.object({
   status: z.enum(["draft", "published", "paused", "archived"]).optional(),
   thankYouMessage: z.string().max(320).nullable().optional(),
   redirectUrl: z.string().url().nullable().optional(),
-  settings: z.record(z.any()).optional(),
+  settings: z.record(z.string(), z.any()).optional(),
 });
 
 export const updateForm = async (input: z.infer<typeof updateFormSchema>) => {

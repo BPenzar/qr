@@ -45,10 +45,19 @@ export default async function PublicFormPage({ params }: PageProps) {
     notFound();
   }
 
+  const formattedQuestions = (questions ?? []).map((question) => ({
+    id: question.id,
+    label: question.label,
+    type: question.type,
+    is_required: question.is_required,
+    options: (question.options as { options?: string[] } | null) ?? null,
+    metadata: (question.metadata as { scale?: number } | null) ?? null,
+  }));
+
   return (
     <PublicForm
       form={qrCode.forms}
-      questions={questions ?? []}
+      questions={formattedQuestions}
     />
   );
 }

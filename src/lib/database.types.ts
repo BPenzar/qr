@@ -34,6 +34,20 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "accounts_owner_id_fkey";
+            columns: ["owner_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "accounts_plan_id_fkey";
+            columns: ["plan_id"];
+            referencedRelation: "plans";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       account_members: {
         Row: {
@@ -60,6 +74,20 @@ export interface Database {
           invited_at?: string;
           accepted_at?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: "account_members_account_id_fkey";
+            columns: ["account_id"];
+            referencedRelation: "accounts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "account_members_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       plans: {
         Row: {
@@ -101,6 +129,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       projects: {
         Row: {
@@ -133,6 +162,14 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "projects_account_id_fkey";
+            columns: ["account_id"];
+            referencedRelation: "accounts";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       forms: {
         Row: {
@@ -183,6 +220,20 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "forms_account_id_fkey";
+            columns: ["account_id"];
+            referencedRelation: "accounts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "forms_project_id_fkey";
+            columns: ["project_id"];
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       form_questions: {
         Row: {
@@ -245,6 +296,14 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "form_questions_form_id_fkey";
+            columns: ["form_id"];
+            referencedRelation: "forms";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       form_qr_codes: {
         Row: {
@@ -277,6 +336,14 @@ export interface Database {
           last_scanned_at?: string | null;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "form_qr_codes_form_id_fkey";
+            columns: ["form_id"];
+            referencedRelation: "forms";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       responses: {
         Row: {
@@ -330,6 +397,32 @@ export interface Database {
           rating?: number | null;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "responses_account_id_fkey";
+            columns: ["account_id"];
+            referencedRelation: "accounts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "responses_form_id_fkey";
+            columns: ["form_id"];
+            referencedRelation: "forms";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "responses_qr_code_id_fkey";
+            columns: ["qr_code_id"];
+            referencedRelation: "form_qr_codes";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "responses_link_id_fkey";
+            columns: ["link_id"];
+            referencedRelation: "form_links";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       response_items: {
         Row: {
@@ -353,6 +446,20 @@ export interface Database {
           value?: Json;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "response_items_response_id_fkey";
+            columns: ["response_id"];
+            referencedRelation: "responses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "response_items_question_id_fkey";
+            columns: ["question_id"];
+            referencedRelation: "form_questions";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       usage_counters: {
         Row: {
@@ -379,13 +486,37 @@ export interface Database {
           period_end?: string;
           value?: number;
         };
+        Relationships: [
+          {
+            foreignKeyName: "usage_counters_account_id_fkey";
+            columns: ["account_id"];
+            referencedRelation: "accounts";
+            referencedColumns: ["id"];
+          },
+        ];
       };
+    };
+    Views: {
+      [_ in never]: never;
     };
     Functions: {
       current_account_ids: {
         Args: Record<PropertyKey, never>;
         Returns: string[];
       };
+    };
+    Enums: {
+      form_channel: "qr" | "widget" | "link";
+      question_type:
+        | "nps"
+        | "rating"
+        | "single_select"
+        | "multi_select"
+        | "short_text"
+        | "long_text";
+    };
+    CompositeTypes: {
+      [_ in never]: never;
     };
   };
 }

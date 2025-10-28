@@ -88,14 +88,12 @@ export async function generateQrCodeAction(formData: FormData) {
   const shortCode = nanoid(8).toLowerCase();
   const destinationUrl = `${appUrl}/f/${shortCode}`;
 
-  const qrInsert: TablesInsert<"form_qr_codes">[] = [
-    {
-      form_id: parsed.data.formId,
-      label: parsed.data.label,
-      short_code: shortCode,
-      destination_url: destinationUrl,
-    },
-  ];
+  const qrInsert: TablesInsert<"form_qr_codes"> = {
+    form_id: parsed.data.formId,
+    label: parsed.data.label,
+    short_code: shortCode,
+    destination_url: destinationUrl,
+  };
 
   const { error } = await supabase
     .from("form_qr_codes")

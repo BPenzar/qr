@@ -52,10 +52,23 @@ export const CreateProjectForm = ({ accountId, disabled }: Props) => {
       if (result.success) {
         reset({ accountId, name: "", description: "" });
         setLimitError(null);
+        return;
       }
-      if (!result.success && result.errors?.limit) {
-        setLimitError(result.errors.limit[0]);
+      if (result.errors && "limit" in result.errors) {
+        const limitErrors = result.errors.limit;
+        if (Array.isArray(limitErrors) && limitErrors.length > 0) {
+          setLimitError(limitErrors[0]);
+        } else {
+          setLimitError("Unable to create project");
+        }
+        return;
       }
+      if (result.errors) {
+        const firstError = Object.values(result.errors)[0]?.[0];
+        setLimitError(firstError ?? "Unable to create project");
+        return;
+      }
+      setLimitError("Unable to create project");
     });
   };
 

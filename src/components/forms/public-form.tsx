@@ -9,7 +9,12 @@ import { Label } from "@/components/ui/label";
 
 const answerSchema = z.object({
   questionId: z.string().uuid(),
-  value: z.union([z.string(), z.number(), z.array(z.string()), z.record(z.unknown())]),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.array(z.string()),
+    z.record(z.string(), z.unknown()),
+  ]),
 });
 
 type FormProps = {
@@ -96,7 +101,7 @@ export const PublicForm = ({ form, questions }: FormProps) => {
     try {
       const answers = Object.entries(responses)
         .map(([questionId, value]) => ({ questionId, value }))
-        .map(answerSchema.parse);
+        .map((entry) => answerSchema.parse(entry));
 
       const response = await fetch(`/api/forms/${form.id}/responses`, {
         method: "POST",

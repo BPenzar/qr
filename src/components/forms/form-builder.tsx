@@ -195,12 +195,26 @@ export const FormBuilder = ({ accountId, projectId, onCreated }: Props) => {
         setChannel(values.channel);
         setQuestions([defaultQuestion()]);
         onCreated?.();
-      } else {
-        setFormError(
-          result.errors?.limit?.[0] ??
-            "Unable to create form. Please review required fields.",
-        );
+        return;
       }
+
+      if (result.errors && "limit" in result.errors) {
+        const limitErrors = result.errors.limit;
+        if (Array.isArray(limitErrors) && limitErrors.length > 0) {
+          setFormError(limitErrors[0]);
+        } else {
+          setFormError("Unable to create form. Please review required fields.");
+        }
+        return;
+      }
+
+      if (result.errors) {
+        const firstError = Object.values(result.errors)[0]?.[0];
+        setFormError(firstError ?? "Unable to create form. Please review required fields.");
+        return;
+      }
+
+      setFormError("Unable to create form. Please review required fields.");
     });
   };
 

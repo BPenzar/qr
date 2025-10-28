@@ -11,7 +11,7 @@ export type AccountWithPlan = Tables<"accounts"> & {
   role: "owner" | "admin" | "analyst";
 };
 
-export const getAccounts = cache(async () => {
+export const getAccounts = cache(async (): Promise<AccountWithPlan[]> => {
   const supabase = await getServerSupabaseClient();
   const user = await getCurrentUser();
 
@@ -36,12 +36,19 @@ export const getAccounts = cache(async () => {
   }
 
   const accounts =
-    data
-      ?.map((member) => ({
-        ...(member.accounts as Tables<"accounts">),
+    data?.reduce<AccountWithPlan[]>((acc, member) => {
+      const account = member.accounts as Tables<"accounts"> | null;
+      if (!account) {
+        return acc;
+      }
+
+      acc.push({
+        ...account,
         role: member.role as AccountWithPlan["role"],
-      }))
-      .filter(Boolean) ?? [];
+        plan: null,
+      });
+      return acc;
+    }, []) ?? [];
 
   const planIds = Array.from(
     new Set(

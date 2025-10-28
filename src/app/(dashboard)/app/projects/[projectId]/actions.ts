@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createForm } from "@/lib/repositories/forms";
+import type { QuestionInput } from "@/lib/repositories/forms";
 import { getServerSupabaseClient } from "@/lib/supabase/server-client";
 import { parsePlanLimits, assertFormsLimit } from "@/lib/plan-limits";
 
@@ -91,24 +92,57 @@ export async function createFormAction(formData: FormData) {
   }
 
   const { questions, ...rest } = parsed.data;
+
+  const formattedQuestions: QuestionInput[] = [];
+  for (const question of questions) {
+    const base = {
+      label: question.label,
+      description: question.description ?? undefined,
+      placeholder: question.placeholder ?? undefined,
+      isRequired: question.isRequired ?? false,
+    };
+
+    switch (question.type) {
+      case "single_select":
+      case "multi_select": {
+        if (!question.options || question.options.length === 0) {
+          return {
+            success: false,
+            errors: { questions: ["Select questions require at least one option"] },
+          } as const;
+        }
+
+        formattedQuestions.push({
+          type: question.type,
+          ...base,
+          options: question.options,
+        });
+        break;
+      }
+      case "rating": {
+        formattedQuestions.push({
+          type: "rating",
+          ...base,
+          metadata: { scale: 5 },
+        });
+        break;
+      }
+      case "nps":
+      case "short_text":
+      case "long_text": {
+        formattedQuestions.push({
+          type: question.type,
+          ...base,
+        });
+        break;
+      }
+    }
+  }
+
   await createForm({
     ...rest,
     redirectUrl: rest.redirectUrl || null,
-    questions: questions.map((question) => ({
-      type: question.type,
-      label: question.label,
-      description: question.description,
-      placeholder: question.placeholder,
-      isRequired: question.isRequired ?? false,
-      metadata:
-        question.type === "rating"
-          ? { scale: 5 }
-          : undefined,
-      options:
-        question.options && question.options.length > 0
-          ? question.options
-          : undefined,
-    })),
+    questions: formattedQuestions,
   });
 
   revalidatePath(`/app/projects/${parsed.data.projectId}`);

@@ -9,7 +9,7 @@ import type { Tables, TablesInsert } from "@/lib/database.types";
 const submissionSchema = z.object({
   channel: z.enum(["qr", "widget", "link"]),
   locationName: z.string().max(120).optional(),
-  attributes: z.record(z.any()).optional(),
+  attributes: z.record(z.string(), z.any()).optional(),
   responses: z
     .array(
       z.object({
@@ -92,13 +92,13 @@ export async function POST(request: Request, { params }: { params: RouteParams }
     form_id: formWithAccount.id,
     channel: parsed.data.channel,
     location_name: parsed.data.locationName ?? null,
-    attributes: parsed.data.attributes ?? {},
+    attributes: (parsed.data.attributes ?? {}) as TablesInsert<"responses">["attributes"],
     ip_hash: ipHash,
     user_agent: userAgent,
   };
 
   const { data: response, error: insertError } = await supabase
-    .from<Tables<"responses">, TablesInsert<"responses">>("responses")
+    .from("responses")
     .insert([responseInsert])
     .select()
     .single();
@@ -112,12 +112,12 @@ export async function POST(request: Request, { params }: { params: RouteParams }
     (item) => ({
       response_id: response.id,
       question_id: item.questionId,
-      value: item.value,
+      value: item.value as TablesInsert<"response_items">["value"],
     }),
   );
 
   const { error: itemsError } = await supabase
-    .from<Tables<"response_items">, TablesInsert<"response_items">>("response_items")
+    .from("response_items")
     .insert(responseItems);
 
   if (itemsError) {
@@ -135,7 +135,7 @@ export async function POST(request: Request, { params }: { params: RouteParams }
   ];
 
   await supabase
-    .from<Tables<"usage_counters">, TablesInsert<"usage_counters">>("usage_counters")
+    .from("usage_counters")
     .upsert(usageCounterUpsert, {
       onConflict: "account_id,metric,period_start",
     });

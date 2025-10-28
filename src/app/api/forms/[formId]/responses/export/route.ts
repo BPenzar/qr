@@ -45,7 +45,9 @@ export async function GET(
     return NextResponse.json({ message: "Unable to fetch responses" }, { status: 500 });
   }
 
-  const questionMap = new Map(questions?.map((question) => [question.id, question.label]));
+  const questionMap = new Map(
+    (questions ?? []).map((question) => [question.id, question.label] as const),
+  );
   const records = (responses ?? []).map((response) => {
     const row: Record<string, unknown> = {
       response_id: response.id,
@@ -54,6 +56,10 @@ export async function GET(
       submitted_at: response.submitted_at,
     };
     response.response_items?.forEach((item) => {
+      if (!item.question_id) {
+        return;
+      }
+
       const label = questionMap.get(item.question_id) ?? item.question_id;
       row[label] = item.value;
     });
