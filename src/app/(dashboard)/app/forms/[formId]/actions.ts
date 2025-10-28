@@ -98,7 +98,7 @@ export async function generateQrCodeAction(formData: FormData) {
   ];
 
   const { error } = await supabase
-    .from("form_qr_codes")
+    .from<Tables<"form_qr_codes">>("form_qr_codes")
     .insert(qrInsert as TablesInsert<"form_qr_codes">[]);
 
   if (error) {

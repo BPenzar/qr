@@ -98,7 +98,7 @@ export async function POST(request: Request, { params }: { params: RouteParams }
   };
 
   const { data: response, error: insertError } = await supabase
-    .from("responses")
+    .from<Tables<"responses">>("responses")
     .insert([responseInsert] as TablesInsert<"responses">[])
     .select()
     .single();
@@ -117,7 +117,7 @@ export async function POST(request: Request, { params }: { params: RouteParams }
   );
 
   const { error: itemsError } = await supabase
-    .from("response_items")
+    .from<Tables<"response_items">>("response_items")
     .insert(responseItems as TablesInsert<"response_items">[]);
 
   if (itemsError) {
@@ -134,12 +134,11 @@ export async function POST(request: Request, { params }: { params: RouteParams }
     },
   ];
 
-  await supabase.from("usage_counters").upsert(
-    usageCounterUpsert as TablesInsert<"usage_counters">[],
-    {
+  await supabase
+    .from<Tables<"usage_counters">>("usage_counters")
+    .upsert(usageCounterUpsert as TablesInsert<"usage_counters">[], {
       onConflict: "account_id,metric,period_start",
-    },
-  );
+    });
 
   return NextResponse.json({ message: "ok" }, { status: 201 });
 }
