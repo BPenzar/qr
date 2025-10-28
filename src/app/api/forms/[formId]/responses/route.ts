@@ -4,7 +4,7 @@ import { createHash } from "crypto";
 import { getServiceRoleClient } from "@/lib/supabase/admin-client";
 import { parsePlanLimits, assertResponsesLimit } from "@/lib/plan-limits";
 import { endOfMonth, startOfMonth } from "date-fns";
-import type { Tables } from "@/lib/database.types";
+import type { Tables, TablesInsert } from "@/lib/database.types";
 
 const submissionSchema = z.object({
   channel: z.enum(["qr", "widget", "link"]),
@@ -87,17 +87,19 @@ export async function POST(request: Request, { params }: { params: RouteParams }
   const userAgent = request.headers.get("user-agent") ?? "";
   const ipHash = createHash("sha256").update(ip).digest("hex");
 
+  const responseInsert: TablesInsert<"responses"> = {
+    account_id: formWithAccount.account_id,
+    form_id: formWithAccount.id,
+    channel: parsed.data.channel,
+    location_name: parsed.data.locationName ?? null,
+    attributes: parsed.data.attributes ?? {},
+    ip_hash: ipHash,
+    user_agent: userAgent,
+  };
+
   const { data: response, error: insertError } = await supabase
     .from("responses")
-    .insert({
-      account_id: formWithAccount.account_id,
-      form_id: formWithAccount.id,
-      channel: parsed.data.channel,
-      location_name: parsed.data.locationName ?? null,
-      attributes: parsed.data.attributes ?? {},
-      ip_hash: ipHash,
-      user_agent: userAgent,
-    })
+    .insert([responseInsert])
     .select()
     .single();
 
@@ -106,28 +108,32 @@ export async function POST(request: Request, { params }: { params: RouteParams }
     return NextResponse.json({ message: "Failed to save response" }, { status: 500 });
   }
 
-  const items = parsed.data.responses.map((item) => ({
-    response_id: response.id,
-    question_id: item.questionId,
-    value: item.value,
-  }));
+  const responseItems: TablesInsert<"response_items">[] = parsed.data.responses.map(
+    (item) => ({
+      response_id: response.id,
+      question_id: item.questionId,
+      value: item.value,
+    }),
+  );
 
   const { error: itemsError } = await supabase
     .from("response_items")
-    .insert(items);
+    .insert(responseItems);
 
   if (itemsError) {
     console.error("Failed to insert response items", itemsError);
   }
 
   await supabase.from("usage_counters").upsert(
-    {
-      account_id: formWithAccount.account_id,
-      metric: "responses_monthly",
-      period_start: periodStart.slice(0, 10),
-      period_end: periodEndDate.slice(0, 10),
-      value: (count ?? 0) + 1,
-    },
+    [
+      {
+        account_id: formWithAccount.account_id,
+        metric: "responses_monthly",
+        period_start: periodStart.slice(0, 10),
+        period_end: periodEndDate.slice(0, 10),
+        value: (count ?? 0) + 1,
+      } satisfies TablesInsert<"usage_counters">,
+    ],
     {
       onConflict: "account_id,metric,period_start",
     },

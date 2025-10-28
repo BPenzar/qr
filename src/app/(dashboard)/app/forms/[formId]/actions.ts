@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { nanoid } from "nanoid";
 import { updateForm } from "@/lib/repositories/forms";
-import type { Tables } from "@/lib/database.types";
+import type { Tables, TablesInsert } from "@/lib/database.types";
 import { getServerSupabaseClient } from "@/lib/supabase/server-client";
 import { appUrl } from "@/env/server";
 import { parsePlanLimits, assertQrLimit } from "@/lib/plan-limits";
@@ -88,12 +88,16 @@ export async function generateQrCodeAction(formData: FormData) {
   const shortCode = nanoid(8).toLowerCase();
   const destinationUrl = `${appUrl}/f/${shortCode}`;
 
-  const { error } = await supabase.from("form_qr_codes").insert({
-    form_id: parsed.data.formId,
-    label: parsed.data.label,
-    short_code: shortCode,
-    destination_url: destinationUrl,
-  });
+  const { error } = await supabase
+    .from("form_qr_codes")
+    .insert([
+      {
+        form_id: parsed.data.formId,
+        label: parsed.data.label,
+        short_code: shortCode,
+        destination_url: destinationUrl,
+      } satisfies TablesInsert<"form_qr_codes">,
+    ]);
 
   if (error) {
     console.error("Failed to create QR code", error);
