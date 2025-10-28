@@ -99,7 +99,7 @@ export async function POST(request: Request, { params }: { params: RouteParams }
 
   const { data: response, error: insertError } = await supabase
     .from("responses")
-    .insert<TablesInsert<"responses">>([responseInsert])
+    .insert([responseInsert] as TablesInsert<"responses">[])
     .select()
     .single();
 
@@ -118,7 +118,7 @@ export async function POST(request: Request, { params }: { params: RouteParams }
 
   const { error: itemsError } = await supabase
     .from("response_items")
-    .insert<TablesInsert<"response_items">>(responseItems);
+    .insert(responseItems as TablesInsert<"response_items">[]);
 
   if (itemsError) {
     console.error("Failed to insert response items", itemsError);
@@ -134,8 +134,8 @@ export async function POST(request: Request, { params }: { params: RouteParams }
     },
   ];
 
-  await supabase.from("usage_counters").upsert<TablesInsert<"usage_counters">>(
-    usageCounterUpsert,
+  await supabase.from("usage_counters").upsert(
+    usageCounterUpsert as TablesInsert<"usage_counters">[],
     {
       onConflict: "account_id,metric,period_start",
     },

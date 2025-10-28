@@ -99,7 +99,7 @@ export async function generateQrCodeAction(formData: FormData) {
 
   const { error } = await supabase
     .from("form_qr_codes")
-    .insert<TablesInsert<"form_qr_codes">>(qrInsert);
+    .insert(qrInsert as TablesInsert<"form_qr_codes">[]);
 
   if (error) {
     console.error("Failed to create QR code", error);
