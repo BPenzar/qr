@@ -40,7 +40,6 @@ export const SignInForm = () => {
               inputPlaceholder: "rgba(226,232,240,0.6)",
               dividerBackground: "rgba(148,163,184,0.4)",
               messageText: "#f8fafc",
-              successText: "#22c55e",
               danger: "#f97316",
             },
             fonts: {
