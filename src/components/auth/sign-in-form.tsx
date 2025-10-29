@@ -34,7 +34,6 @@ export const SignInForm = () => {
             colors: {
               brand: "#0ea5e9",
               brandAccent: "#0284c7",
-              background: "transparent",
               inputBackground: "rgba(15,23,42,0.7)",
               inputBorder: "rgba(226,232,240,0.2)",
               inputText: "#f8fafc",
