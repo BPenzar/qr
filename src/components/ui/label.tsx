@@ -7,7 +7,7 @@ export const Label = ({
 }: LabelHTMLAttributes<HTMLLabelElement>) => (
   <label
     className={twMerge(
-      "text-sm font-medium text-slate-600",
+      "text-xs font-semibold uppercase tracking-[0.3em] text-white/50",
       className,
     )}
     {...props}

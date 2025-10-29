@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { getSession } from "@/lib/auth";
 
 const features = [
   {
@@ -19,48 +22,112 @@ const features = [
   },
 ];
 
-export default function Home() {
-  return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
-      <div className="mx-auto max-w-6xl px-6 pb-24 pt-24 lg:px-8">
-        <header className="mx-auto max-w-3xl text-center">
-          <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-600">
-            Free MVP · Ready for Stripe upgrade
-          </span>
-          <h1 className="mt-6 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            Capture feedback everywhere your customers are.
-          </h1>
-          <p className="mt-4 text-lg text-slate-600">
-            Generate QR journeys for physical touchpoints and embed widgets on
-            your site. Responses sync to Supabase in real-time with dashboards,
-            limits, and upgrade paths built-in from day one.
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button asChild size="lg">
-              <Link href="/sign-in">Start for free</Link>
-            </Button>
-            <Button variant="secondary" size="lg" asChild>
-              <Link href="#features">See how it works</Link>
-            </Button>
-          </div>
-        </header>
+export default async function Home() {
+  const session = await getSession();
+  const destination = session ? "/app" : "/";
 
-        <section id="features" className="mt-24 grid gap-12 sm:grid-cols-3">
-          {features.map((feature) => (
-            <div
-              key={feature.title}
-              className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
-            >
-              <h3 className="text-xl font-semibold text-slate-900">
-                {feature.title}
-              </h3>
-              <p className="mt-3 text-sm text-slate-600">
-                {feature.description}
-              </p>
+  return (
+    <div className="flex min-h-screen flex-col">
+      <SiteHeader
+        title="BSP Feedback Platform"
+        subtitle="AI assistant for orchestrating customer feedback journeys"
+        destination={destination}
+      />
+      <main className="flex flex-1 flex-col">
+        <section className="relative isolate overflow-hidden border-b border-white/10 bg-black/20">
+          <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-20 sm:px-6 lg:py-24">
+            <div className="max-w-3xl space-y-8 text-left">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white/70">
+                Free MVP · Stripe-ready upgrades
+              </span>
+              <div className="space-y-6">
+                <h1 className="text-4xl font-semibold text-white sm:text-5xl lg:text-6xl">
+                  Capture feedback everywhere customers connect with you.
+                </h1>
+                <p className="text-base text-white/70 sm:text-lg">
+                  Deploy QR touchpoints for on-premise moments, embed web
+                  widgets on your site, and orchestrate responses through
+                  Supabase with dashboards, limits, and upgrade paths from day
+                  one.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Link
+                  href="/sign-in"
+                  className="group inline-flex items-center gap-2 rounded-full border border-sky-400/50 bg-sky-500/80 px-6 py-3 text-sm font-semibold text-white shadow-[0_20px_45px_-20px_rgba(14,165,233,0.6)] transition hover:border-sky-300 hover:bg-sky-400/80"
+                >
+                  Start for free
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <Link
+                  href="#features"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-white/30 hover:bg-white/10 hover:text-white"
+                >
+                  See capabilities
+                </Link>
+              </div>
             </div>
-          ))}
+            <div className="grid gap-6 rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_40px_60px_-45px_rgba(15,118,110,0.55)] backdrop-blur sm:grid-cols-2">
+              <div className="space-y-3">
+                <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                  Product snapshot
+                </p>
+                <h2 className="text-lg font-semibold text-white">
+                  Unified QR, web, and kiosk feedback hub
+                </h2>
+                <p className="text-sm text-white/60">
+                  Launch custom projects with QR packs, guided templates, and
+                  distribution hints that keep your service teams aligned.
+                </p>
+              </div>
+              <div className="space-y-3">
+                <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+                  Built-in analytics
+                </p>
+                <h2 className="text-lg font-semibold text-white">
+                  Sentiment dashboards and automated summaries
+                </h2>
+                <p className="text-sm text-white/60">
+                  Monitor NPS and satisfaction trends, export CSVs, and trigger
+                  digests to keep leadership looped in every week.
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
-      </div>
-    </main>
+
+        <section
+          id="features"
+          className="mx-auto w-full max-w-5xl px-4 py-20 sm:px-6 lg:py-24"
+        >
+          <div className="max-w-2xl space-y-4">
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+              Platform capabilities
+            </span>
+            <h2 className="text-3xl font-semibold text-white sm:text-4xl">
+              Everything you need to instrument real-time feedback flows.
+            </h2>
+            <p className="text-base text-white/60 sm:text-lg">
+              Modular projects, templated forms, and analytics that help SMB
+              teams react faster to every signal.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature) => (
+              <div
+                key={feature.title}
+                className="flex h-full flex-col gap-4 rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-[0_20px_45px_-25px_rgba(8,47,73,0.55)] backdrop-blur transition hover:border-white/20 hover:bg-white/[0.06]"
+              >
+                <h3 className="text-lg font-semibold text-white">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-white/70">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </div>
   );
 }

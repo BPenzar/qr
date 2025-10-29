@@ -3,6 +3,7 @@
 import "server-only";
 import { z } from "zod";
 import { getServerSupabaseClient } from "@/lib/supabase/server-client";
+import { getServiceRoleClient } from "@/lib/supabase/admin-client";
 import type {
   Tables,
   TablesInsert,
@@ -123,7 +124,6 @@ export const getFormWithQuestions = async (formId: string, accountId: string) =>
 
 export const createForm = async (input: z.infer<typeof formPayloadSchema>) => {
   const payload = formPayloadSchema.parse(input);
-  const supabase = await getServerSupabaseClient();
 
   const formInsert: TablesInsert<"forms"> = {
     account_id: payload.accountId,
@@ -137,7 +137,9 @@ export const createForm = async (input: z.infer<typeof formPayloadSchema>) => {
     status: "draft",
   };
 
-  const { data: form, error: formError } = await supabase
+  const serviceSupabase = getServiceRoleClient();
+
+  const { data: form, error: formError } = await serviceSupabase
     .from("forms")
     .insert(formInsert)
     .select()
@@ -163,7 +165,7 @@ export const createForm = async (input: z.infer<typeof formPayloadSchema>) => {
     }),
   );
 
-  const { error: questionsError } = await supabase
+  const { error: questionsError } = await serviceSupabase
     .from("form_questions")
     .insert(questionInserts);
 

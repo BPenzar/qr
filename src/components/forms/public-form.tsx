@@ -130,12 +130,12 @@ export const PublicForm = ({ form, questions }: FormProps) => {
 
   if (submitted) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center bg-slate-50 px-6 py-16">
-        <div className="w-full rounded-3xl bg-white p-10 text-center shadow-xl">
-          <h1 className="text-2xl font-semibold text-slate-900">
+      <main className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(14,116,144,0.2),_transparent_60%)] px-6 py-16">
+        <div className="w-full rounded-3xl border border-white/10 bg-white/[0.04] p-10 text-center text-white shadow-[0_35px_65px_-40px_rgba(14,165,233,0.6)] backdrop-blur">
+          <h1 className="text-2xl font-semibold">
             {form.thank_you_message ?? "Thank you for your feedback!"}
           </h1>
-          <p className="mt-3 text-sm text-slate-500">
+          <p className="mt-3 text-sm text-white/70">
             Your response has been recorded.{" "}
             {form.redirect_url ? "Redirecting..." : ""}
           </p>
@@ -145,17 +145,15 @@ export const PublicForm = ({ form, questions }: FormProps) => {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-10">
-      <div className="mx-auto max-w-2xl rounded-3xl bg-white p-10 shadow-xl">
-        <header className="mb-6 text-center">
-          <p className="text-xs uppercase tracking-wide text-blue-600">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(14,116,144,0.2),_transparent_60%)] px-4 py-12 text-white">
+      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.06] p-10 shadow-[0_45px_80px_-40px_rgba(14,165,233,0.55)] backdrop-blur">
+        <header className="mb-8 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/60">
             Powered by BSP Feedback
           </p>
-          <h1 className="mt-2 text-3xl font-semibold text-slate-900">
-            {form.name}
-          </h1>
+          <h1 className="mt-3 text-4xl font-semibold">{form.name}</h1>
           {form.description ? (
-            <p className="mt-2 text-sm text-slate-500">{form.description}</p>
+            <p className="mt-3 text-base text-white/70">{form.description}</p>
           ) : null}
         </header>
 
@@ -168,11 +166,11 @@ export const PublicForm = ({ form, questions }: FormProps) => {
             const selectedValue = responses[question.id];
 
             return (
-              <div key={question.id} className="space-y-2">
-                <Label className="text-base font-medium text-slate-800">
+              <div key={question.id} className="space-y-3">
+                <Label className="text-base font-semibold text-white normal-case">
                   {question.label}
                   {question.is_required ? (
-                    <span className="text-red-500"> *</span>
+                    <span className="text-rose-400"> *</span>
                   ) : null}
                 </Label>
 
@@ -185,10 +183,10 @@ export const PublicForm = ({ form, questions }: FormProps) => {
                       <button
                         key={value}
                         type="button"
-                        className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-medium transition ${
+                        className={`flex h-11 w-11 items-center justify-center rounded-full border text-sm font-semibold transition ${
                           Number(selectedValue) === value
-                            ? "border-blue-600 bg-blue-50 text-blue-600"
-                            : "border-slate-200 bg-white text-slate-600"
+                            ? "border-sky-400 bg-sky-500/30 text-white"
+                            : "border-white/15 bg-white/5 text-white/70 hover:border-white/25"
                         }`}
                         onClick={() => handleRatingSelect(question.id, String(value))}
                       >
@@ -203,11 +201,11 @@ export const PublicForm = ({ form, questions }: FormProps) => {
                     {(question.options?.options ?? []).map((option) => (
                       <label
                         key={option}
-                        className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+                        className="flex cursor-pointer items-center gap-3 text-sm text-white/75"
                       >
                         <input
                           type="radio"
-                          className="h-4 w-4"
+                          className="h-4 w-4 accent-sky-400"
                           checked={selectedValue === option}
                           onChange={() => handleSingleSelect(question.id, option)}
                         />
@@ -226,11 +224,11 @@ export const PublicForm = ({ form, questions }: FormProps) => {
                       return (
                         <label
                           key={option}
-                          className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+                          className="flex cursor-pointer items-center gap-3 text-sm text-white/75"
                         >
                           <input
                             type="checkbox"
-                            className="h-4 w-4"
+                            className="h-4 w-4 accent-sky-400"
                             checked={selectedOptions.has(option)}
                             onChange={(event) =>
                               handleMultiSelect(
@@ -272,7 +270,7 @@ export const PublicForm = ({ form, questions }: FormProps) => {
           })}
 
           {errorMessage ? (
-            <p className="text-sm text-red-600">{errorMessage}</p>
+            <p className="text-sm text-rose-400">{errorMessage}</p>
           ) : null}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>

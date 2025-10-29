@@ -9,28 +9,24 @@ export default async function SettingsPage() {
   const limits = parsePlanLimits(account);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 text-white">
       <Card>
         <CardHeader>
           <CardTitle>Workspace settings</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-sm text-slate-500">
+        <CardContent className="space-y-5 text-sm text-white/70">
           <div>
-            <p className="text-slate-600">Plan</p>
-            <p className="text-base font-semibold text-slate-900">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">
+              Plan
+            </p>
+            <p className="mt-1 text-base font-semibold text-white">
               {account?.plan?.name ?? "Free"}
             </p>
           </div>
           <ul className="grid gap-1 text-xs">
-            <li>
-              Projects: {limits.projects ?? "Unlimited"}
-            </li>
-            <li>
-              Forms per project: {limits.forms_per_project ?? "Unlimited"}
-            </li>
-            <li>
-              Responses per month: {limits.responses_per_month ?? "Unlimited"}
-            </li>
+            <li>Projects: {limits.projects ?? "Unlimited"}</li>
+            <li>Forms per project: {limits.forms_per_project ?? "Unlimited"}</li>
+            <li>Responses per month: {limits.responses_per_month ?? "Unlimited"}</li>
           </ul>
           <Button disabled variant="secondary">
             Manage members (coming soon)

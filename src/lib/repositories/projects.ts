@@ -3,6 +3,7 @@
 import "server-only";
 import { z } from "zod";
 import { getServerSupabaseClient } from "@/lib/supabase/server-client";
+import { serviceRoleSupabaseKey, supabaseAnonKey, supabaseUrl } from "@/env/server";
 import type {
   Tables,
   TablesInsert,
@@ -33,26 +34,39 @@ const createProjectSchema = z.object({
 
 export const createProject = async (input: z.infer<typeof createProjectSchema>) => {
   const payload = createProjectSchema.parse(input);
-  const supabase = await getServerSupabaseClient();
-
+  if (!serviceRoleSupabaseKey) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY is not configured. Unable to create projects.",
+    );
+  }
+  if (!supabaseAnonKey) {
+    throw new Error("NEXT_PUBLIC_SUPABASE_ANON_KEY missing; cannot create project.");
+  }
   const insert: TablesInsert<"projects"> = {
     account_id: payload.accountId,
     name: payload.name,
     description: payload.description ?? null,
   };
 
-  const { data, error } = await supabase
-    .from("projects")
-    .insert(insert)
-    .select()
-    .single();
+  const response = await fetch(`${supabaseUrl}/rest/v1/projects`, {
+    method: "POST",
+    headers: {
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${serviceRoleSupabaseKey}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation",
+    },
+    body: JSON.stringify(insert),
+  });
 
-  if (error) {
-    console.error("Failed to create project", error);
-    throw error;
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    console.error("Failed to create project", body);
+    throw new Error(body.message ?? "Failed to create project");
   }
 
-  return data as Tables<"projects">;
+  const data = (await response.json()) as Tables<"projects">[];
+  return data[0];
 };
 
 const updateProjectSchema = z.object({
@@ -67,7 +81,11 @@ export const updateProject = async (
   input: z.infer<typeof updateProjectSchema>,
 ) => {
   const payload = updateProjectSchema.parse(input);
-  const supabase = await getServerSupabaseClient();
+  if (!serviceRoleSupabaseKey) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY is not configured. Unable to update projects.",
+    );
+  }
 
   const update: TablesUpdate<"projects"> = {};
   if (payload.name !== undefined) update.name = payload.name;
@@ -79,18 +97,26 @@ export const updateProject = async (
     update.archived_at = payload.isArchived ? new Date().toISOString() : null;
   }
 
-  const { data, error } = await supabase
-    .from("projects")
-    .update(update)
-    .eq("id", payload.projectId)
-    .eq("account_id", payload.accountId)
-    .select()
-    .single();
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/projects?id=eq.${payload.projectId}&account_id=eq.${payload.accountId}`,
+    {
+      method: "PATCH",
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${serviceRoleSupabaseKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=representation",
+      },
+      body: JSON.stringify(update),
+    },
+  );
 
-  if (error) {
-    console.error("Failed to update project", error);
-    throw error;
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    console.error("Failed to update project", body);
+    throw new Error(body.message ?? "Failed to update project");
   }
 
-  return data as Tables<"projects">;
+  const data = (await response.json()) as Tables<"projects">[];
+  return data[0];
 };

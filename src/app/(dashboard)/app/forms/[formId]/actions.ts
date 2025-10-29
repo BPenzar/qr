@@ -6,6 +6,7 @@ import { nanoid } from "nanoid";
 import { updateForm } from "@/lib/repositories/forms";
 import type { Tables, TablesInsert } from "@/lib/database.types";
 import { getServerSupabaseClient } from "@/lib/supabase/server-client";
+import { getServiceRoleClient } from "@/lib/supabase/admin-client";
 import { appUrl } from "@/env/server";
 import { parsePlanLimits, assertQrLimit } from "@/lib/plan-limits";
 
@@ -95,7 +96,9 @@ export async function generateQrCodeAction(formData: FormData) {
     destination_url: destinationUrl,
   };
 
-  const { error } = await supabase
+  const serviceClient = getServiceRoleClient();
+
+  const { error } = await serviceClient
     .from("form_qr_codes")
     .insert(qrInsert);
 

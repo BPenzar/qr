@@ -24,17 +24,15 @@ export default async function AppOverviewPage() {
 
   if (!account) {
     return (
-      <div className="mx-auto flex max-w-lg flex-col items-center gap-4 rounded-2xl bg-white p-12 text-center shadow-sm">
-        <h1 className="text-2xl font-semibold text-slate-900">
-          Welcome to BSP Feedback
-        </h1>
-        <p className="text-sm text-slate-500">
+      <div className="mx-auto flex max-w-lg flex-col items-center gap-5 rounded-3xl border border-white/10 bg-white/[0.05] p-12 text-center text-white">
+        <h1 className="text-2xl font-semibold">Welcome to BSP Feedback</h1>
+        <p className="text-sm text-white/70">
           Create your first project to generate QR codes and web widgets, then
           share the form to start collecting responses.
         </p>
         <Link
           href="/app/projects#new-project"
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-500"
+          className="inline-flex items-center gap-2 rounded-full border border-sky-400/50 bg-sky-500/80 px-6 py-3 text-sm font-semibold text-white shadow-[0_20px_45px_-20px_rgba(14,165,233,0.65)] transition hover:border-sky-300 hover:bg-sky-400/80"
         >
           Create project
         </Link>
@@ -65,12 +63,13 @@ export default async function AppOverviewPage() {
       : `${summary.responsesThisWeek >= summary.responsesLastWeek ? "↑" : "↓"} ${Math.round(((summary.responsesThisWeek - summary.responsesLastWeek) / Math.max(summary.responsesLastWeek, 1)) * 100)}%`;
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-900">
-          Feedback overview
-        </h1>
-        <p className="text-sm text-slate-500">
+    <div className="space-y-10 text-white">
+      <div className="space-y-3">
+        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+          Dashboard
+        </span>
+        <h1 className="text-3xl font-semibold">Feedback overview</h1>
+        <p className="text-sm text-white/65">
           Track projects, QR scans, and sentiment in one place.
         </p>
       </div>
@@ -129,10 +128,10 @@ export default async function AppOverviewPage() {
         <CardHeader>
           <CardTitle>Plan usage</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
+        <CardContent className="space-y-3 text-sm text-white/70">
           <div className="flex items-center justify-between">
-            <span className="text-slate-600">Projects</span>
-            <span className="font-medium text-slate-800">
+            <span className="text-white/60">Projects</span>
+            <span className="font-medium text-white">
               {projects.length}
               {planLimits.projects ? ` / ${planLimits.projects}` : ""}
             </span>
@@ -141,7 +140,7 @@ export default async function AppOverviewPage() {
             {projects.map((project) => (
               <div
                 key={project.id}
-                className="flex items-center justify-between text-xs text-slate-500"
+                className="flex items-center justify-between text-xs text-white/60"
               >
                 <span>{project.name}</span>
                 <span>
@@ -154,8 +153,8 @@ export default async function AppOverviewPage() {
             ))}
           </div>
           <div className="flex items-center justify-between pt-1">
-            <span className="text-slate-600">Monthly responses</span>
-            <span className="font-medium text-slate-800">
+            <span className="text-white/60">Monthly responses</span>
+            <span className="font-medium text-white">
               {summary.responsesThisWeek + summary.responsesLastWeek}
               {planLimits.responses_per_month
                 ? ` / ${planLimits.responses_per_month}`
@@ -169,36 +168,36 @@ export default async function AppOverviewPage() {
         <CardHeader>
           <CardTitle>Latest responses</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-sm text-white/70">
           {recentResponses.length === 0 ? (
-            <p className="text-sm text-slate-500">
+            <p className="text-white/60">
               No responses yet. Share your first QR code or web widget to start
               collecting feedback.
             </p>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-white/12">
               {recentResponses.map((response) => (
                 <div
                   key={response.id}
                   className="grid gap-3 py-4 md:grid-cols-[1fr_auto]"
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-800">
+                    <p className="text-sm font-semibold text-white">
                       {response.channel === "qr" ? "QR form" : "Web widget"}
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-white/60">
                       {new Date(response.submitted_at).toLocaleString()}
                     </p>
                   </div>
                   <div className="flex items-center gap-3 md:justify-end">
                     {response.rating ? (
-                      <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">
+                      <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-white">
                         Rating {response.rating}
                       </span>
                     ) : null}
                     <Link
                       href={`/app/responses/${response.id}`}
-                      className="text-xs font-medium text-blue-600 hover:text-blue-500"
+                      className="text-xs font-semibold text-sky-400 hover:text-sky-300"
                     >
                       View details
                     </Link>

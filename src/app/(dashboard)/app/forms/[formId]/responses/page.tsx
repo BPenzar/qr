@@ -49,12 +49,13 @@ export default async function FormResponsesPage({ params }: PageProps) {
       : null;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-900">
-          Responses · {form.name}
-        </h1>
-        <p className="text-sm text-slate-500">
+    <div className="space-y-8 text-white">
+      <div className="space-y-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+          Responses
+        </span>
+        <h1 className="text-3xl font-semibold">{form.name}</h1>
+        <p className="text-sm text-white/65">
           {responseCount} responses captured.
         </p>
       </div>
@@ -65,9 +66,7 @@ export default async function FormResponsesPage({ params }: PageProps) {
             <CardTitle>Total responses</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold text-slate-900">
-              {responseCount}
-            </p>
+            <p className="text-3xl font-semibold text-white">{responseCount}</p>
           </CardContent>
         </Card>
         <Card>
@@ -75,7 +74,7 @@ export default async function FormResponsesPage({ params }: PageProps) {
             <CardTitle>Average rating</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold text-slate-900">
+            <p className="text-3xl font-semibold text-white">
               {averageRating ? averageRating.toFixed(1) : "—"}
             </p>
           </CardContent>
@@ -89,14 +88,17 @@ export default async function FormResponsesPage({ params }: PageProps) {
         <CardContent className="space-y-4">
           {responses?.length ? (
             responses.map((response) => (
-              <div key={response.id} className="rounded-xl border border-slate-200 p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500">
+              <div
+                key={response.id}
+                className="rounded-2xl border border-white/12 bg-white/5 p-4"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-white/60">
                   <span>{new Date(response.submitted_at).toLocaleString()}</span>
-                  <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
+                  <span className="rounded-full border border-white/15 bg-white/10 px-2 py-1 text-xs font-semibold text-white">
                     {response.channel.toUpperCase()}
                   </span>
                 </div>
-                <dl className="mt-3 space-y-2 text-sm text-slate-700">
+                <dl className="mt-3 space-y-2 text-sm text-white/75">
                   {response.response_items?.map((item) => {
                     const question = questions.find((q) => q.id === item.question_id);
                     if (!question) return null;
@@ -107,8 +109,8 @@ export default async function FormResponsesPage({ params }: PageProps) {
                         : String(item.value ?? "");
                     return (
                       <div key={item.question_id}>
-                        <dt className="font-medium">{question.label}</dt>
-                        <dd className="text-slate-600">{value}</dd>
+                        <dt className="font-semibold text-white">{question.label}</dt>
+                        <dd className="text-white/65">{value}</dd>
                       </div>
                     );
                   })}
@@ -116,7 +118,7 @@ export default async function FormResponsesPage({ params }: PageProps) {
               </div>
             ))
           ) : (
-            <p className="text-sm text-slate-500">No responses yet.</p>
+            <p className="text-sm text-white/60">No responses yet.</p>
           )}
         </CardContent>
       </Card>

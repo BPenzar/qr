@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inclusive_Sans } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { SupabaseAuthListener } from "@/components/providers/supabase-auth-listener";
 
-const inter = Inter({
+const inclusiveSans = Inclusive_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
@@ -25,9 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-slate-100 text-slate-900">
-      <body className={`${inter.variable} min-h-screen font-sans`}>
-        <QueryProvider>{children}</QueryProvider>
+    <html lang="en">
+      <body
+        className={`${inclusiveSans.variable} min-h-screen font-sans antialiased`}
+      >
+        <QueryProvider>
+          <SupabaseAuthListener />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

@@ -26,10 +26,13 @@ export default async function FormSharePage({ params }: PageProps) {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Share {form.name}</h1>
-        <p className="text-sm text-slate-500">
+    <div className="space-y-8 text-white">
+      <div className="space-y-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+          Share
+        </span>
+        <h1 className="text-3xl font-semibold">{form.name}</h1>
+        <p className="text-sm text-white/65">
           Download QR assets, embed the widget, or share a direct link.
         </p>
       </div>
@@ -41,20 +44,23 @@ export default async function FormSharePage({ params }: PageProps) {
         <CardContent className="space-y-3">
           {qrCodes?.length ? (
             qrCodes.map((code) => (
-              <div key={code.short_code} className="flex items-center justify-between rounded-lg border border-slate-200 p-4">
-                <span className="text-sm font-medium text-slate-700">
+              <div
+                key={code.short_code}
+                className="flex items-center justify-between rounded-2xl border border-white/12 bg-white/5 p-4"
+              >
+                <span className="text-sm font-semibold text-white">
                   {code.label}
                 </span>
                 <Link
                   href={`/api/forms/${form.id}/qr/${code.short_code}`}
-                  className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                  className="text-sm font-semibold text-sky-400 hover:text-sky-300"
                 >
                   Download PNG
                 </Link>
               </div>
             ))
           ) : (
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-white/60">
               Generate QR codes on the form detail page to share offline.
             </p>
           )}
@@ -65,12 +71,12 @@ export default async function FormSharePage({ params }: PageProps) {
         <CardHeader>
           <CardTitle>Public link</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm text-slate-600">
+        <CardContent className="space-y-3 text-sm text-white/70">
           <p>
             Share the hosted form link anywhere. Each response is tracked with
             rate limiting and sentiment tagging.
           </p>
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-xs">
+          <div className="rounded-2xl border border-white/12 bg-white/10 p-3 font-mono text-xs text-white">
             https://app.bsp-lab.dev/f/{qrCodes?.[0]?.short_code ?? "your-code"}
           </div>
         </CardContent>

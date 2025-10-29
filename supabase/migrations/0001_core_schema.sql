@@ -335,12 +335,30 @@ for all
 using (account_id in (select * from public.current_account_ids()))
 with check (account_id in (select * from public.current_account_ids()));
 
+create policy "Service role manages projects"
+on public.projects
+for all
+to service_role
+using (true)
+with check (true);
+
 -- Forms policies
+grant all on table public.forms to service_role;
+grant all on table public.form_questions to service_role;
+grant all on table public.form_qr_codes to service_role;
+
 create policy "Users manage forms within account"
 on public.forms
 for all
 using (account_id in (select * from public.current_account_ids()))
 with check (account_id in (select * from public.current_account_ids()));
+
+create policy "Service role manages forms"
+on public.forms
+for all
+to service_role
+using (true)
+with check (true);
 
 create policy "Public can read published forms"
 on public.forms
@@ -362,6 +380,13 @@ with check (
     select id from public.forms where account_id in (select * from public.current_account_ids())
   )
 );
+
+create policy "Service role manages form questions"
+on public.form_questions
+for all
+to service_role
+using (true)
+with check (true);
 
 create policy "Public can read published form questions"
 on public.form_questions
@@ -389,6 +414,13 @@ with check (
     select id from public.forms where account_id in (select * from public.current_account_ids())
   )
 );
+
+create policy "Service role manages form qr codes"
+on public.form_qr_codes
+for all
+to service_role
+using (true)
+with check (true);
 
 create policy "Public can resolve published qr codes"
 on public.form_qr_codes

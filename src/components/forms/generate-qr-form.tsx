@@ -47,11 +47,12 @@ export const GenerateQrForm = ({ formId }: Props) => {
   };
 
   return (
-    <form className="flex flex-col gap-3 rounded-lg border border-slate-200 p-4" onSubmit={onSubmit}>
-      <div className="flex flex-col gap-1">
-        <Label htmlFor="qr-label" className="text-xs uppercase text-slate-500">
-          Label
-        </Label>
+    <form
+      className="flex flex-col gap-4 rounded-2xl border border-white/12 bg-white/5 p-4"
+      onSubmit={onSubmit}
+    >
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="qr-label">Label</Label>
         <Input
           id="qr-label"
           value={label}
@@ -66,14 +67,14 @@ export const GenerateQrForm = ({ formId }: Props) => {
         {lastCode ? (
           <a
             href={`/api/forms/${formId}/qr/${lastCode}`}
-            className="text-sm font-medium text-blue-600 hover:text-blue-500"
+            className="text-sm font-semibold text-sky-400 hover:text-sky-300"
           >
             Download last QR
           </a>
         ) : null}
       </div>
       {errorMessage ? (
-        <p className="text-xs text-red-600">{errorMessage}</p>
+        <p className="text-xs text-rose-400">{errorMessage}</p>
       ) : null}
     </form>
   );

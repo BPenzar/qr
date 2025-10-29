@@ -51,14 +51,15 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-slate-900">
-              {project.name}
-            </h1>
-            <p className="text-sm text-slate-500">
+    <div className="grid gap-10 text-white lg:grid-cols-[2fr_1fr]">
+      <div className="space-y-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-2">
+            <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+              Project
+            </span>
+            <h1 className="text-3xl font-semibold">{project.name}</h1>
+            <p className="text-sm text-white/65">
               {project.description ?? "Configure QR forms and widgets."}
             </p>
           </div>
@@ -69,7 +70,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
         {forms.length === 0 ? (
           <Card>
-            <CardContent className="py-10 text-center text-sm text-slate-500">
+            <CardContent className="py-10 text-center text-sm text-white/60">
               Create your first form to generate a QR code.
             </CardContent>
           </Card>
@@ -80,20 +81,20 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between text-base">
                     <span>{form.name}</span>
-                    <span className="text-xs font-medium text-slate-500">
+                    <span className="text-xs font-semibold text-white/60">
                       {form.status}
                     </span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-white/65">
                     {form.description ?? "No description"}
                   </p>
-                  <div className="flex flex-wrap gap-2 text-xs text-slate-500">
-                    <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1">
+                  <div className="flex flex-wrap gap-2 text-xs text-white/70">
+                    <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1">
                       {form.channel.toUpperCase()}
                     </span>
-                    <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1">
+                    <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1">
                       Version {form.version}
                     </span>
                   </div>
@@ -102,7 +103,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       <Link
                         key={qr.short_code}
                         href={`/f/${qr.short_code}`}
-                        className="inline-flex items-center rounded-lg border border-slate-200 px-3 py-1 text-xs text-blue-600 hover:text-blue-500"
+                        className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-sky-400 hover:text-sky-300"
                       >
                         QR: {qr.label}
                       </Link>

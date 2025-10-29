@@ -34,12 +34,12 @@ export const UpdateFormStatusForm = ({ accountId, formId, currentStatus }: Props
     <div className="flex items-center gap-3">
       <select
         defaultValue={currentStatus}
-        className="h-10 rounded-lg border border-slate-200 px-3 text-sm"
+        className="h-11 rounded-2xl border border-white/15 bg-white/5 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-sky-400"
         onChange={(event) => onSubmit(event.target.value)}
         disabled={isPending}
       >
         {statusOptions.map((option) => (
-          <option key={option.value} value={option.value}>
+          <option key={option.value} value={option.value} className="bg-slate-900 text-white">
             {option.label}
           </option>
         ))}

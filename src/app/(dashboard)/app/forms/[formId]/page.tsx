@@ -36,13 +36,14 @@ export default async function FormDetailPage({ params }: PageProps) {
     .eq("form_id", form.id);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900">
-            {form.name}
-          </h1>
-          <p className="text-sm text-slate-500">
+    <div className="space-y-8 text-white">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="space-y-2">
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+            Form
+          </span>
+          <h1 className="text-3xl font-semibold">{form.name}</h1>
+          <p className="text-sm text-white/65">
             {form.description ?? "Configure and publish this form."}
           </p>
         </div>
@@ -57,20 +58,20 @@ export default async function FormDetailPage({ params }: PageProps) {
         <CardHeader>
           <CardTitle>Form details</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-4 lg:grid-cols-3">
+        <CardContent className="grid gap-4 text-sm text-white/70 lg:grid-cols-3">
           <div>
-            <p className="text-xs uppercase text-slate-500">Channel</p>
-            <p className="text-sm font-medium text-slate-700">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">Channel</p>
+            <p className="mt-1 text-base font-semibold text-white">
               {form.channel.toUpperCase()}
             </p>
           </div>
           <div>
-            <p className="text-xs uppercase text-slate-500">Status</p>
-            <p className="text-sm font-medium text-slate-700">{form.status}</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">Status</p>
+            <p className="mt-1 text-base font-semibold text-white">{form.status}</p>
           </div>
           <div>
-            <p className="text-xs uppercase text-slate-500">Responses</p>
-            <p className="text-sm font-medium text-slate-700">
+            <p className="text-xs uppercase tracking-[0.3em] text-white/50">Responses</p>
+            <p className="mt-1 text-base font-semibold text-white">
               {responseCount ?? 0}
             </p>
           </div>
@@ -81,18 +82,23 @@ export default async function FormDetailPage({ params }: PageProps) {
         <CardHeader>
           <CardTitle>Questions</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-4">
           {questions.map((question, index) => (
-            <div key={question.id} className="rounded-xl border border-slate-100 p-4">
-              <p className="text-xs uppercase tracking-wide text-slate-500">
+            <div
+              key={question.id}
+              className="rounded-2xl border border-white/12 bg-white/5 p-4"
+            >
+              <p className="text-xs uppercase tracking-[0.3em] text-white/50">
                 {index + 1}. {question.type.replace("_", " ")}
               </p>
-              <p className="text-sm font-medium text-slate-800">{question.label}</p>
+              <p className="mt-2 text-sm font-semibold text-white">
+                {question.label}
+              </p>
               {question.description ? (
-                <p className="text-xs text-slate-500">{question.description}</p>
+                <p className="text-xs text-white/60">{question.description}</p>
               ) : null}
               {question.options ? (
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2">
                   {(question.options as { options?: string[] })?.options?.map((option) => (
                     <Badge key={option}>{option}</Badge>
                   ))}
@@ -119,24 +125,26 @@ export default async function FormDetailPage({ params }: PageProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <GenerateQrForm formId={form.id} />
-          <div className="space-y-2">
+          <div className="space-y-3">
             {qrCodes?.length ? (
               qrCodes.map((code) => (
                 <div
                   key={code.id}
-                  className="flex flex-col gap-2 rounded-lg border border-slate-200 p-4 md:flex-row md:items-center md:justify-between"
+                  className="flex flex-col gap-2 rounded-2xl border border-white/12 bg-white/5 p-4 md:flex-row md:items-center md:justify-between"
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-700">
+                    <p className="text-sm font-semibold text-white">
                       {code.label}
                     </p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-white/60">
                       Created {new Date(code.created_at).toLocaleString()}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 text-sm">
                     <Button asChild variant="ghost" size="sm">
-                      <Link href={`/api/forms/${form.id}/qr/${code.short_code}`}>Download PNG</Link>
+                      <Link href={`/api/forms/${form.id}/qr/${code.short_code}`}>
+                        Download PNG
+                      </Link>
                     </Button>
                     <Button asChild variant="ghost" size="sm">
                       <Link href={`/f/${code.short_code}`} target="_blank">
@@ -147,7 +155,7 @@ export default async function FormDetailPage({ params }: PageProps) {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-white/60">
                 No QR codes yet. Generate one to share at your location.
               </p>
             )}

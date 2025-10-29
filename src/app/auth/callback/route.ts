@@ -28,3 +28,34 @@ export async function GET(request: Request) {
 
   return NextResponse.redirect(`${origin}${next}`);
 }
+
+export async function POST(request: Request) {
+  const { event, session } = await request.json();
+  const cookieStore = await cookies();
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) => {
+          cookieStore.set(name, value, options);
+        });
+      },
+    },
+  });
+
+  if (event === "SIGNED_OUT") {
+    await supabase.auth.signOut();
+  } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+    if (session?.access_token) {
+      await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
+    }
+  }
+
+  return NextResponse.json({ success: true });
+}

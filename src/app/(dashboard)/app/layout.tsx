@@ -25,7 +25,6 @@ export default async function DashboardLayout({ children }: Props) {
 
   return (
     <AppShell
-      accounts={accounts}
       activeAccount={activeAccount}
       projects={projects}
       user={user}

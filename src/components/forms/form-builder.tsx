@@ -223,7 +223,7 @@ export const FormBuilder = ({ accountId, projectId, onCreated }: Props) => {
       <CardHeader>
         <CardTitle>New form</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 text-white/75">
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <input type="hidden" {...register("accountId")} />
           <input type="hidden" {...register("projectId")} />
@@ -236,7 +236,7 @@ export const FormBuilder = ({ accountId, projectId, onCreated }: Props) => {
               <Label htmlFor="channel">Channel</Label>
               <select
                 id="channel"
-                className="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                className="h-11 w-full rounded-2xl border border-white/15 bg-white/5 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-sky-400"
                 {...channelField}
               >
                 <option value="qr">QR code</option>
@@ -267,7 +267,7 @@ export const FormBuilder = ({ accountId, projectId, onCreated }: Props) => {
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">
                 Questions
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -289,14 +289,14 @@ export const FormBuilder = ({ accountId, projectId, onCreated }: Props) => {
               {questions.map((question, index) => (
                 <div
                   key={question.id}
-                  className="rounded-xl border border-slate-200 bg-slate-50/50 p-4"
+                  className="rounded-2xl border border-white/12 bg-white/5 p-4"
                 >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-slate-500">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <p className="text-xs uppercase tracking-[0.3em] text-white/50">
                         {index + 1}. {question.type.replace("_", " ")}
                       </p>
-                      <div className="mt-2 space-y-2">
+                      <div className="mt-3 space-y-3">
                         <Input
                           value={question.label}
                           onChange={(event) =>
@@ -310,7 +310,7 @@ export const FormBuilder = ({ accountId, projectId, onCreated }: Props) => {
                           question.type === "long_text") && (
                           <Input
                             value={question.placeholder}
-                          onChange={(event) =>
+                            onChange={(event) =>
                               updateQuestion(question.id, {
                                 placeholder: event.target.value,
                               })
@@ -345,7 +345,7 @@ export const FormBuilder = ({ accountId, projectId, onCreated }: Props) => {
                       ×
                     </Button>
                   </div>
-                  <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                  <div className="mt-3 flex items-center gap-2 text-xs text-white/60">
                     <input
                       id={`required-${question.id}`}
                       type="checkbox"
@@ -355,6 +355,7 @@ export const FormBuilder = ({ accountId, projectId, onCreated }: Props) => {
                           isRequired: event.target.checked,
                         })
                       }
+                      className="h-4 w-4 rounded border border-white/25 bg-white/10 accent-sky-400"
                     />
                     <label htmlFor={`required-${question.id}`}>
                       Required question
@@ -366,7 +367,7 @@ export const FormBuilder = ({ accountId, projectId, onCreated }: Props) => {
           </div>
 
           {formError ? (
-            <p className="text-xs text-red-600">{formError}</p>
+            <p className="text-xs text-rose-400">{formError}</p>
           ) : null}
 
           <div className="flex items-center justify-end gap-3">

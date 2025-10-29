@@ -20,11 +20,14 @@ export default async function FormsPage() {
   const projectMap = new Map(projects.map((project) => [project.id, project.name]));
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Forms</h1>
-          <p className="text-sm text-slate-500">
+    <div className="space-y-8 text-white">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-2">
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+            Forms
+          </span>
+          <h1 className="text-3xl font-semibold">Feedback forms</h1>
+          <p className="text-sm text-white/65">
             Manage all feedback forms across QR, widget, and link channels.
           </p>
         </div>
@@ -35,7 +38,7 @@ export default async function FormsPage() {
 
       {forms.length === 0 ? (
         <Card>
-          <CardContent className="py-10 text-center text-sm text-slate-500">
+          <CardContent className="py-10 text-center text-sm text-white/60">
             No forms yet. Create one from a project to get started.
           </CardContent>
         </Card>
@@ -46,20 +49,20 @@ export default async function FormsPage() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between text-base">
                   <span>{form.name}</span>
-                  <span className="text-xs font-medium text-slate-500">
+                  <span className="text-xs font-medium text-white/60">
                     {form.status}
                   </span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-1 flex-col gap-3">
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-white/65">
                   {form.description ?? "No description provided."}
                 </p>
-                <div className="mt-auto flex flex-wrap gap-2 text-xs text-slate-500">
-                  <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1">
+                <div className="mt-auto flex flex-wrap gap-2 text-xs text-white/70">
+                  <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1">
                     {form.channel.toUpperCase()}
                   </span>
-                  <span className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1">
+                  <span className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1">
                     Project: {projectMap.get(form.project_id) ?? "Unknown"}
                   </span>
                 </div>

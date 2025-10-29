@@ -77,9 +77,9 @@ export const CreateProjectForm = ({ accountId, disabled }: Props) => {
       <CardHeader>
         <CardTitle>Create a project</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 text-white/75">
         {disabled ? (
-          <p className="rounded-lg bg-slate-100 p-3 text-xs text-slate-500">
+          <p className="rounded-2xl border border-white/10 bg-white/10 p-3 text-xs text-white/70">
             The free plan allows one active project. Archive a project or
             upgrade to unlock more workspaces.
           </p>
@@ -90,7 +90,7 @@ export const CreateProjectForm = ({ accountId, disabled }: Props) => {
             <Label htmlFor="name">Project name</Label>
             <Input id="name" placeholder="Summer pop-up feedback" {...register("name")} />
             {errors.name ? (
-              <p className="text-xs text-red-600">{errors.name.message}</p>
+              <p className="text-xs text-rose-400">{errors.name.message}</p>
             ) : null}
           </div>
           <div className="space-y-2">
@@ -102,11 +102,11 @@ export const CreateProjectForm = ({ accountId, disabled }: Props) => {
               {...register("description")}
             />
             {errors.description ? (
-              <p className="text-xs text-red-600">{errors.description.message}</p>
+              <p className="text-xs text-rose-400">{errors.description.message}</p>
             ) : null}
           </div>
           {limitError ? (
-            <p className="text-xs text-red-600">{limitError}</p>
+            <p className="text-xs text-rose-400">{limitError}</p>
           ) : null}
           <Button
             type="submit"

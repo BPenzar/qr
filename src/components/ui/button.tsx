@@ -5,24 +5,24 @@ import { twMerge } from "tailwind-merge";
 import { Slot } from "@radix-ui/react-slot";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center rounded-full border font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         primary:
-          "bg-blue-600 text-white shadow-sm hover:bg-blue-500 focus-visible:outline-blue-600",
+          "border-sky-400/50 bg-sky-500/90 text-white shadow-[0_18px_40px_-24px_rgba(14,165,233,0.7)] hover:bg-sky-400/90 focus-visible:outline-sky-400",
         secondary:
-          "bg-slate-100 text-slate-900 hover:bg-slate-200 focus-visible:outline-blue-600",
+          "border-white/15 bg-white/5 text-white/80 hover:border-white/30 hover:bg-white/10 hover:text-white focus-visible:outline-white/40",
         ghost:
-          "text-slate-600 hover:bg-slate-100 focus-visible:outline-blue-600",
+          "border-transparent text-white/70 hover:bg-white/10 hover:text-white focus-visible:outline-white/40",
         destructive:
-          "bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600",
+          "border-rose-500/40 bg-rose-500 text-white hover:bg-rose-400 focus-visible:outline-rose-500",
       },
       size: {
-        sm: "h-8 px-3 text-sm",
-        md: "h-10 px-4 text-sm",
-        lg: "h-12 px-6 text-base",
-        icon: "h-10 w-10",
+        sm: "h-9 px-4 text-xs",
+        md: "h-11 px-6 text-sm",
+        lg: "h-12 px-7 text-base",
+        icon: "h-10 w-10 p-0",
       },
     },
     defaultVariants: {
