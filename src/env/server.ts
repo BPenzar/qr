@@ -15,7 +15,18 @@ const serverEnvSchema = z.object({
   SENTRY_DSN: z.string().optional(),
 });
 
-const parsed = serverEnvSchema.safeParse(process.env);
+const resolvedAppUrl =
+  process.env.NEXT_PUBLIC_APP_URL ??
+  (process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : undefined);
+
+const parsed = serverEnvSchema.safeParse({
+  ...process.env,
+  NEXT_PUBLIC_APP_URL: resolvedAppUrl,
+});
 
 if (!parsed.success) {
   console.error(
